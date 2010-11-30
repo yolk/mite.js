@@ -1,40 +1,26 @@
-(function() {
+(function() {  
+  var defaults  = { protocol : 'http'
+                  , domain   : 'mite.yo.lk'
+                  , async    : true
+                  };
   
-  $.mite = (function() {
+  miteQuery = (function() {
     // Private
-    var prepare, get_url_for, set_API_key, get_ajax_options, error, json_parse, not_allowed,
+    var get_url_for, json_parse, not_allowed,
         _request, _get, _post, _put, _delete,
-        
-        account, myself, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User;
-    
-    // prepare CORS calls to mite account
-    prepare = function(options) {
-      if (!options.account || !options.api_key) throw "account & api_key need to be set";
-      
-      $.mite.config          = {};
-      $.mite.config.protocol = options.protocol || $.mite.defaults.protocol;
-      $.mite.config.domain   = options.domain   || $.mite.defaults.domain;
-      
-      $.mite.config.async    = (typeof options.async != 'undefined') ? options.async : $.mite.defaults.async;
-
-      $.mite.config.account  = options.account;
-      $.mite.config.api_key  = options.api_key;
-    };
+        account, myself, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
+        Interface, 
+        config = {};
     
     // build URL for API request
     get_url_for = function(path) {
-      return $.mite.config.protocol + '://' + $.mite.config.account + '.' + $.mite.config.domain + '/' + path + '.json';
-    };
-    
-    // simple logger
-    error = function(xhr, textStatus, errorThrown) {
-      alert(errorThrown);
+      return config.protocol + '://' + config.account + '.' + config.domain + '/' + path + '.json';
     };
     
     // parse string to JSON
-    parse = function(string) {
-      return /^\s*$/.test(string) ? {} : JSON.parse(string)
-    }
+    json_parse = function(string) {
+      return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string);
+    };
     
     // ajax call wrapper
     _request = function(options, callback) {
@@ -44,23 +30,23 @@
       if (callback instanceof Function) {
         xhr.onreadystatechange = function(){
           if(xhr.readyState==4 && (xhr.status==200 || xhr.status==0)) {
-            callback( parse(xhr.responseText) );
+            callback( json_parse(xhr.responseText) );
           }
         };
       }
       
-      xhr.open(options.type,options.url,$.mite.config.async);
+      xhr.open(options.type,options.url,config.async);
       
       if (data instanceof Object) {
-        data = JSON.stringify(data)
+        data = JSON.stringify(data);
         xhr.setRequestHeader('Content-Type','application/json');
       }
       xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-      xhr.setRequestHeader("X-MiteApiKey", $.mite.config.api_key);
+      xhr.setRequestHeader("X-MiteApiKey", config.api_key);
       xhr.send(data);
       
-      if (!$.mite.config.async) return parse(xhr.responseText);
-    }
+      if (!config.async) return json_parse(xhr.responseText);
+    };
     
     // GET request
     _get = function(path, params, callback) {
@@ -68,7 +54,7 @@
         callback = params;
         params = {};
       }
-      return _request({type: 'GET', url: get_url_for(path), data: params}, callback)
+      return _request({type: 'GET', url: get_url_for(path), data: params}, callback);
     };
     
     // POST request
@@ -180,13 +166,21 @@
     }
     
     // Public
-    return {
-      defaults  : { protocol : 'http'
-                  , domain   : 'mite.yo.lk'
-                  , async    : true
-                  },
-      prepare   : prepare,
+    Interface = function(options) {
+      if (!options.account || !options.api_key) throw "account & api_key need to be set";
       
+      config.protocol = options.protocol || defaults.protocol;
+      config.domain   = options.domain   || defaults.domain;
+      
+      config.async    = (typeof options.async !== undefined) ? options.async : defaults.async;
+
+      config.account  = options.account;
+      config.api_key  = options.api_key;
+      
+      this.config     = config;
+    };
+    
+    Interface.prototype = {
       // resources
       account   : account,
       myself    : myself,
@@ -198,5 +192,6 @@
       Service   : Service,
       User      : User
     };
+    return Interface;
   }());
 }());
