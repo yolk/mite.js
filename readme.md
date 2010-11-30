@@ -20,6 +20,7 @@ Different callbacks for error, success, complete can be passed as object instead
     $.mite.account()
 
     $.mite.TimeEntry.all()
+    $.mite.TimeEntry.all({group_by: 'customer,project'})
     $.mite.TimeEntry.create({minutes: 10})
     $.mite.TimeEntry.find(123)
     $.mite.TimeEntry.update(123, {minutes: 20})
