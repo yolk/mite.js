@@ -66,4 +66,4 @@ A callback function can be passed to all queries as last param.
 License
 -------
 
-mite.node is licensed unter the MIT license.
+mite.query is licensed unter the MIT license.
