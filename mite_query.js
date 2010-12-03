@@ -29,7 +29,7 @@
           
       if (callback instanceof Function) {
         xhr.onreadystatechange = function(){
-          if(xhr.readyState==4 && (xhr.status==200 || xhr.status==0)) {
+          if(xhr.readyState==4 && (/^(0|2\d\d)$/.test(xhr.status))) {
             callback( json_parse(xhr.responseText) );
           }
         };
