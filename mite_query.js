@@ -36,13 +36,12 @@
       }
       
       xhr.open(options.type,options.url,config.async);
-      
       if (data instanceof Object) {
         data = JSON.stringify(data);
         xhr.setRequestHeader('Content-Type','application/json');
       }
       xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-      xhr.setRequestHeader("X-MiteApiKey", config.api_key);
+      xhr.setRequestHeader("X-MiteApiKey", config.api_key);     
       xhr.send(data);
       
       if (!config.async) return json_parse(xhr.responseText);
@@ -86,8 +85,8 @@
     };
     
     // http://mite.yo.lk/en/api/account.html
-    account             = function(params, callback)      { return    _get('account',            params, callback); };
-    myself              = function(params, callback)      { return    _get('myself',             params, callback); };
+    account             = function(callback)              { return    _get('account',            callback); };
+    myself              = function(callback)              { return    _get('myself',             callback); };
         
     // http://mite.yo.lk/en/api/time-entries.html
     // see also: http://mite.yo.lk/en/api/grouped-time-entries.html
@@ -167,12 +166,12 @@
     
     // Public
     Interface = function(options) {
-      if (!options.account || !options.api_key) throw "account & api_key need to be set";
+      if (!options || !options.account || !options.api_key) throw "account & api_key need to be set";
       
       config.protocol = options.protocol || defaults.protocol;
       config.domain   = options.domain   || defaults.domain;
       
-      config.async    = (typeof options.async !== undefined) ? options.async : defaults.async;
+      config.async    = (typeof options.async != 'undefined') ? options.async : defaults.async;
 
       config.account  = options.account;
       config.api_key  = options.api_key;

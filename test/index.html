@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>mite.query tests</title>
+
+  <script src="../mite_query.js"></script>
+  <style>
+  body {
+    font: 1em/1.4em Helvetica, Arial;
+  }
+  body > form,
+  body > div {
+    border:           1px solid #ddd;
+    padding:          .2em 1em;
+    background:       #f9f9f9;
+    margin-bottom:    1em;
+    
+  }
+  #setup label {
+    float:            left;
+    width:            5em;
+    padding-right:    .2em;
+    text-align:       right;
+  }
+  .hide {
+    display:          none;
+  }
+  </style>
+</head>
+
+<body>
+  <h1>mite.query tests</h1>
+
+  <form id="setup" onsubmit="connect();return false;">
+    <p>Please provide your mite.account &amp; api_key.</p>
+    <p>
+      <label for="account">https://</label>
+      <input type="text" name="account" id="input-account" />
+      .mite.yo.lk
+    </p>
+    <p>
+      <label for="account">API key:</label>
+      <input type="text" name="api_key" id="input-api_key" />
+      <small>(<a href="http://mite.yo.lk/en/faq.html#q131">Where do I get my API key?</a>)</small>
+    </p>
+    <p>
+      <button>connect</button>
+      <small id="connection-status">not connected</small>
+    </p>
+  </form><!-- /setup -->
+  
+  <script>
+  function connect() {
+    if (!$) alert('jQuery could not be loaded. Are you connected to the internet?');
+    
+    var account = $('#input-account').val(),
+        api_key = $('#input-api_key').val(),
+        $status = $('#connection-status'),
+        domain  = 'mite.local',
+        protocol = 'http';
+    
+    try {
+      Mite = new miteQuery({account: account, api_key: api_key, domain: domain, protocol: protocol});
+    } catch(e) {
+      alert(e);
+      return;
+    }
+    
+    $status.text('loading ...');
+    load_myself();
+  } // connect()
+  </script>
+
+  <div id="myself" class="hide">
+    <p class="status">loading myself ...</p>
+  </div><!-- /myself -->
+  <script>
+    function load_myself() {
+      $myself = $('#myself');
+      $myself.show();
+      Mite.myself(function(data){
+        $myself.append(build_table_for('user', data));
+        $('#connection-status').text('connected.');
+        $('.status', $myself).html(link_to('myself') + ' loaded.')
+        load_account();
+      });
+    } // load_myself()
+  </script>
+  
+  <div id="account" class="hide">
+    <p class="status">loading account ...</p>
+  </div><!-- /account -->
+  <script>
+    function load_account() {
+      $account = $('#account');
+      console.log($account)
+      
+      $account.show();
+      Mite.account(function(data){
+        $account.append(build_table_for('account', data));
+        $('.status', $account).html(link_to('account') + ' loaded.')
+        load_customers();
+      });
+    } // load_account()
+  </script>
+  
+  <div id="customers" class="hide">
+    <p class="status">loading customers ...</p>
+  </div><!-- /customers -->
+  <script>
+    function load_customers() {
+      $customers = $('#customers');
+      $customers.show();
+      Mite.Customer.active(function(data) {
+        $customers.append(build_table_for('customer', data));
+        $('.status', $customers).html(link_to('customers') + ' loaded.')
+        load_projects();
+      })
+    } // load_customers()
+  </script>
+  
+  <div id="projects" class="hide">
+    <p class="status">loading projects ...</p>
+  </div><!-- /projects -->
+  <script>
+    function load_projects() {
+      $projects = $('#projects');
+      $projects.show();
+      Mite.Project.active(function(data) {
+        $projects.append(build_table_for('project', data));
+        $('.status', $projects).html(link_to('projects') + ' loaded.')
+        load_services();
+      })
+    } // load_projects()
+  </script>
+  
+  <div id="services" class="hide">
+    <p class="status">loading services ...</p>
+  </div><!-- /services -->
+  <script>
+    function load_services() {
+      $services = $('#services');
+      $services.show();
+      Mite.Service.active(function(data) {
+        $services.append(build_table_for('service', data));
+        $('.status', $services).html(link_to('services') + ' loaded.')
+      })
+    } // load_services()
+  </script>
+  
+  
+  <script>
+  function link_to(path) {
+    var href = Mite.config.protocol + '://' + Mite.config.account + '.' + Mite.config.domain + '/' + path;
+    return '<a href="'+href+'" target="_blank">'+path+'</a>'
+  } // link_to(path)
+  function build_table_for(what, json) {
+    var html = '';
+    if(json instanceof Array) {
+      if (! json.length) {
+        html = '<p>0 data loaded.</p>';
+      } else {
+        html += '<thead><tr>';
+        for(attr in json[0][what]) {
+          html += '<th>';
+          html += attr;
+          html += '</th>';
+        }
+        html += '</tr></thead>';
+        
+        for (var i=0; i < json.length; i++) {
+          html += '<tr>';
+          for(attr in json[i][what]) {
+            html += '<td>';
+            html += json[i][what][attr];
+            html += '</td>';
+          }
+          html += '</tr>';
+          json[i][what];
+        };
+      }
+    } else {
+      for(attr in json[what]) {
+        html += '<tr>'
+        html += '<th>';
+        html += attr;
+        html += '</th>';
+        html += '<td>';
+        html += json[what][attr];
+        html += '</td>';
+        html += '</tr>';
+      }
+    }
+    return '<table>'+html+'</table>'
+  } // build_table_for()
+  </script>
+  <script src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+* Make callbacks more flexible. 
+* Add support for error & timeout callbacks.
+* Add test for create, update, delete operations.
