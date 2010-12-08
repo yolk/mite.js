@@ -57,7 +57,7 @@
     var account = $('#input-account').val(),
         api_key = $('#input-api_key').val(),
         $status = $('#connection-status'),
-        domain  = 'mite.local',
+        domain  = 'rails3mite.yo.lk',
         protocol = 'http';
     
     try {
@@ -79,11 +79,16 @@
     function load_myself() {
       $myself = $('#myself');
       $myself.show();
-      Mite.myself(function(data){
-        $myself.append(build_table_for('user', data));
-        $('#connection-status').text('connected.');
-        $('.status', $myself).html(link_to('myself') + ' loaded.')
-        load_account();
+      Mite.myself({
+        success: function(data){
+          $myself.append(build_table_for('user', data));
+          $('#connection-status').text('connected.');
+          $('.status', $myself).html(link_to('myself') + ' loaded.')
+          load_account();
+        },
+        error: function(xhr, error) {
+          alert('Something went wrong:\n' +error);
+        }
       });
     } // load_myself()
   </script>
