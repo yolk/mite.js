@@ -40,7 +40,7 @@
         
         if (xhr.readyState == 4) {
           
-          if (xhr.status == 200 || xhr.status == 0) {
+          if (/2\d\d/.test(xhr.status) || xhr.status == 0) {
             if(xhr.responseText) {
               onsuccess( json_parse(xhr.responseText) );
             } else {
