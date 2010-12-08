@@ -2,7 +2,7 @@
   var defaults  = { protocol : 'https'
                   , domain   : 'mite.yo.lk'
                   , async    : true
-                  , timeout  : 60000 // 1 minute
+                  , timeout  : 60 // 1 minute
                   };
   
   miteQuery = (function() {
@@ -56,7 +56,7 @@
       
       if (options.error) timeout_handler = setTimeout(function() {
         onerror(xhr, 'timeout');
-      }, timeout);
+      }, timeout * 1000);
       
       xhr.open(method,get_url_for(path),async);
       if (data instanceof Object) {

@@ -13,8 +13,6 @@ Setup miteQuery using your mite.account & mite.api_key.
 
     Mite = new miteQuery({account: 'accountname',api_key: '12345678'})
 
-A callback function can be passed to all queries as last param.
-
     Mite.myself()
     Mite.account()
 
@@ -62,6 +60,26 @@ A callback function can be passed to all queries as last param.
     Mite.User.archived()
     Mite.User.find(123)
     Mite.User.time_entries_for(123)
+    
+A callback function can be passed to all queries as last param.
+
+    Mite.myself(function(data) {
+      alert('Hello, ' + data.user.name + '!')
+    });
+
+Pass differnt callbacks as an associative Array
+
+    Mite.Customer.find(1234, {
+      success  : function(data) {},
+      error    : function(xhr, msg) {},
+      complete : function(xhr) {}
+    });
+    
+Additional opptions that can be passed when initializing or for each
+requst are
+
+* async:   set to false if you need to make a synchronous request. Default is true. 
+* timeout: set the timeout for a request. Default is 60 (= 1 Minute)
 
 License
 -------
