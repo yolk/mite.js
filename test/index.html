@@ -99,8 +99,6 @@
   <script>
     function load_account() {
       $account = $('#account');
-      console.log($account)
-      
       $account.show();
       Mite.account(function(data){
         $account.append(build_table_for('account', data));
