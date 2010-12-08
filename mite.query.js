@@ -113,7 +113,7 @@
     _put = function(path, params, options) {
       var parsed_options  = _parse(options);
       parsed_options.data = params;
-      return _request('POST', path, parsed_options);
+      return _request('PUT', path, parsed_options);
     };
     
     // DELETE request
