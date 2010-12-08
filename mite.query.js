@@ -37,7 +37,6 @@
           timeout_handler;
           
       xhr.onreadystatechange = function(){
-        
         if (xhr.readyState == 4) {
           
           if (/2\d\d/.test(xhr.status) || xhr.status == 0) {
@@ -143,7 +142,7 @@
     // http://mite.yo.lk/en/api/tracker.html
     Tracker = {
       find              : function(options)              { return    _get('tracker',                                options); },
-      start             : function(id, options)          { return    _put('tracker/'+id,                            options); },
+      start             : function(id, options)          { return    _put('tracker/'+id,                        {}, options); },
       stop              : function(id, options)          { return _delete('tracker/'+id,                            options); }
     }
     
