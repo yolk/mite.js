@@ -1,11 +1,11 @@
-(function() {  
+(function(window) {  
   var defaults  = { protocol : 'https'
                   , domain   : 'mite.yo.lk'
                   , async    : true
                   , timeout  : 60 // 1 minute
                   };
   
-  miteQuery = (function() {
+  window.miteQuery = (function() {
     // Private
     var get_url_for, json_parse, not_allowed,
         _request, _get, _post, _put, _delete,
@@ -235,4 +235,4 @@
     };
     return Interface;
   }());
-}());
+}(window));

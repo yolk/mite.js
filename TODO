@@ -1,3 +1,4 @@
+* rename .delete() => .destroy()
 * Make it work with Chrome
 * How to handle xhr.status == 0?
 * Add test for create, update, delete operations.
