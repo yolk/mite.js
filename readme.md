@@ -21,7 +21,7 @@ Setup miteQuery using your mite.account & mite.api_key.
     Mite.TimeEntry.create({minutes: 10})
     Mite.TimeEntry.find(123)
     Mite.TimeEntry.update(123, {minutes: 20})
-    Mite.TimeEntry.delete(123)
+    Mite.TimeEntry.destroy(123)
 
     Mite.Tracker.find()
     Mite.Tracker.start(123)
@@ -36,7 +36,7 @@ Setup miteQuery using your mite.account & mite.api_key.
     Mite.Customer.create({name: 'my new customer'})
     Mite.Customer.find(123)
     Mite.Customer.update(123, {name: 'new named customer'})
-    Mite.Customer.delete(123)
+    Mite.Customer.destroy(123)
     Mite.Customer.projects_for(123)
     Mite.Customer.time_entries_for(123)
 
@@ -45,7 +45,7 @@ Setup miteQuery using your mite.account & mite.api_key.
     Mite.Project.create({name: 'my new project'})
     Mite.Project.find(123)
     Mite.Project.update(123, {name: 'new named project'})
-    Mite.Project.delete(123)
+    Mite.Project.destroy(123)
     Mite.Project.time_entries_for(123)
 
     Mite.Service.active()
@@ -53,7 +53,7 @@ Setup miteQuery using your mite.account & mite.api_key.
     Mite.Service.create({name: 'my new service'})
     Mite.Service.find(123)
     Mite.Service.update(123, {name: 'new named service'})
-    Mite.Service.delete(123)
+    Mite.Service.destroy(123)
     Mite.Service.time_entries_for(123)
 
     Mite.User.active()

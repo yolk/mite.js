@@ -8,7 +8,7 @@
   window.miteQuery = (function() {
     // Private
     var get_url_for, json_parse, not_allowed,
-        _request, _get, _post, _put, _delete,
+        _request, _get, _post, _put, _destroy,
         _buildQuery, _setup,
         account, myself, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
         Interface, 
@@ -115,9 +115,9 @@
       return _request('PUT', path, parsed_options);
     };
     
-    // DELETE request
-    _delete = function(path, options) {
-      return _request('DELETE', path, _parse(options));
+    // destroy request
+    _destroy = function(path, options) {
+      return _request('destroy', path, _parse(options));
     };
     
     // through Errors for operations that are not allowed over the mite.API
@@ -136,14 +136,14 @@
       find              : function(id, options)          { return    _get('time_entries/'+id,                       options); },
       create            : function(params, options)      { return   _post('time_entries',     {time_entry: params}, options); },
       update            : function(id, params, options)  { return    _put('time_entries/'+id, {time_entry: params}, options); },
-      delete            : function(id, options)          { return _delete('time_entries/'+id,                       options); }
+      destroy            : function(id, options)          { return _destroy('time_entries/'+id,                       options); }
     } 
     
     // http://mite.yo.lk/en/api/tracker.html
     Tracker = {
       find              : function(options)              { return    _get('tracker',                                options); },
       start             : function(id, options)          { return    _put('tracker/'+id,                        {}, options); },
-      stop              : function(id, options)          { return _delete('tracker/'+id,                            options); }
+      stop              : function(id, options)          { return _destroy('tracker/'+id,                            options); }
     }
     
     // http://mite.yo.lk/en/api/bookmarks.html
@@ -156,7 +156,7 @@
       
       create            : not_allowed,
       update            : not_allowed,
-      delete            : not_allowed
+      destroy            : not_allowed
     }
         
     // http://mite.yo.lk/en/api/customers.html
@@ -166,7 +166,7 @@
       find              : function(id, options)          { return    _get('customers/'+id,                          options); },
       create            : function(params, options)      { return   _post('customers',          {customer: params}, options); },
       update            : function(id, params, options)  { return    _put('customers/'+id,      {customer: params}, options); },
-      delete            : function(id, options)          { return _delete('customers/'+id,                          options); },
+      destroy            : function(id, options)          { return _destroy('customers/'+id,                          options); },
       projects_for      : function(ids, options)         { return    _get('projects?customer_id='+ids,              options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?customer_id='+ids,          options); }
     }
@@ -178,7 +178,7 @@
       find              : function(id, options)          { return    _get('projects/'+id,                           options); },
       create            : function(params, options)      { return   _post('projects',           {project: params},  options); },
       update            : function(id, params, options)  { return    _put('projects/'+id,       {project: params},  options); },
-      delete            : function(id, options)          { return _delete('projects/'+id,                           options); },
+      destroy            : function(id, options)          { return _destroy('projects/'+id,                           options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?project_id='+ids,           options); }
     }
     
@@ -189,7 +189,7 @@
       find              : function(id, options)          { return    _get('services/'+id,                           options); },
       create            : function(params, options)      { return   _post('services',           {service: params},  options); },
       update            : function(id, params, options)  { return    _put('services/'+id,       {service: params},  options); },
-      delete            : function(id, options)          { return _delete('services/'+id,                           options); },
+      destroy            : function(id, options)          { return _destroy('services/'+id,                           options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?service_id='+ids,           options); }
     }
     
@@ -202,7 +202,7 @@
     
       create            : not_allowed,
       update            : not_allowed,
-      delete            : not_allowed
+      destroy            : not_allowed
     }
     
     // Public
