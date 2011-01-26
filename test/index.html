@@ -15,7 +15,6 @@
     padding:          .2em 1em;
     background:       #f9f9f9;
     margin-bottom:    1em;
-    
   }
   #setup label {
     float:            left;
@@ -25,6 +24,21 @@
   }
   .hide {
     display:          none;
+  }
+  table {
+    font-size:        .8em;
+    border-collapse:  collapse;
+  }
+  th {
+    text-align:       right;
+  }
+  th, td {
+    border:           1px solid #ccc;
+    padding:          .2em .3em;
+  }
+  thead th {
+    border-bottom:    1px solid #000;
+    text-align:       left;    
   }
   </style>
 </head>
@@ -195,7 +209,7 @@
         html += '</tr>';
       }
     }
-    return '<table>'+html+'</table>'
+    return '<table cellspacing="0">'+html+'</table>'
   } // build_table_for()
   </script>
   <script src='vendor/jquery-1.4.4.min.js'></script>
