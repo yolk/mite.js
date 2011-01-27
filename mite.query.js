@@ -6,12 +6,13 @@
                   };
   
   window.miteQuery = (function() {
-    // Private
+    
+    ////
+    //  Private
     var get_url_for, json_parse, not_allowed,
         _request, _get, _post, _put, _destroy,
-        _buildQuery, _setup,
+        _buildQuery, _parse,
         account, myself, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
-        Interface, 
         config = {},
         nada = function() {};
     
@@ -23,6 +24,28 @@
     // parse string to JSON
     json_parse = function(string) {
       return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string);
+    };
+    
+    // through Errors for operations that are not allowed over the mite.API
+    not_allowed = function() {
+      throw new Error('not allowed over API');
+    };  
+    
+    // build a query out of an associative array
+    _buildQuery = function(json) {
+      if (!json) return "";
+      
+      var params = [];
+      for(key in json) {
+        params.push([encodeURIComponent(key),encodeURIComponent(json[key])].join('='));
+      }
+      return params.join('&');
+    };
+    
+    _parse = function(options) {
+      if (!options) options = {};
+      if (typeof options == 'function') { options = {success: options}; };
+      return options;
     };
     
     // ajax call wrapper
@@ -71,23 +94,6 @@
       if (!config.async) return json_parse(xhr.responseText);
     };
     
-    // build a query out of an associative array
-    _buildQuery = function(json) {
-      if (!json) return "";
-      
-      var params = [];
-      for(key in json) {
-        params.push([encodeURIComponent(key),encodeURIComponent(json[key])].join('='));
-      }
-      return params.join('&');
-    };
-    
-    _parse = function(options) {
-      if (!options) options = {};
-      if (typeof options == 'function') { options = {success: options}; };
-      return options;
-    };
-    
     // GET request
     _get = function(path, options) {
       var parsed_options  = _parse(options),
@@ -118,11 +124,6 @@
     // destroy request
     _destroy = function(path, options) {
       return _request('destroy', path, _parse(options));
-    };
-    
-    // through Errors for operations that are not allowed over the mite.API
-    not_allowed = function() {
-      throw new Error('not allowed over API');
     };
     
     // http://mite.yo.lk/en/api/account.html
@@ -205,8 +206,9 @@
       destroy            : not_allowed
     };
     
-    // Public
-    Interface = function(options) {
+    //// 
+    //  Public
+    var Interface = function(options) {
       if (!options || !options.account || !options.api_key) throw "account & api_key need to be set";
       
       config.protocol = options.protocol || defaults.protocol;
