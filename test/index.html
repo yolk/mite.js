@@ -66,13 +66,11 @@
   
   <script>
   function connect() {
-    if (!$) alert('jQuery could not be loaded. Are you connected to the internet?');
-    
     var account = $('#input-account').val(),
         api_key = $('#input-api_key').val(),
         $status = $('#connection-status'),
-        domain  = 'mite.local:8080',
-        protocol = 'http';
+        domain  = 'mite.yo.lk',
+        protocol = 'https';
     
     try {
       Mite = new miteQuery({account: account, api_key: api_key, domain: domain, protocol: protocol});
