@@ -137,14 +137,14 @@
       create            : function(params, options)      { return   _post('time_entries',     {time_entry: params}, options); },
       update            : function(id, params, options)  { return    _put('time_entries/'+id, {time_entry: params}, options); },
       destroy            : function(id, options)          { return _destroy('time_entries/'+id,                       options); }
-    } 
+    };
     
     // http://mite.yo.lk/en/api/tracker.html
     Tracker = {
       find              : function(options)              { return    _get('tracker',                                options); },
       start             : function(id, options)          { return    _put('tracker/'+id,                        {}, options); },
       stop              : function(id, options)          { return _destroy('tracker/'+id,                            options); }
-    }
+    };
     
     // http://mite.yo.lk/en/api/bookmarks.html
     Bookmark = {
@@ -157,7 +157,7 @@
       create            : not_allowed,
       update            : not_allowed,
       destroy            : not_allowed
-    }
+    };
         
     // http://mite.yo.lk/en/api/customers.html
     Customer = {
@@ -169,7 +169,7 @@
       destroy            : function(id, options)          { return _destroy('customers/'+id,                          options); },
       projects_for      : function(ids, options)         { return    _get('projects?customer_id='+ids,              options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?customer_id='+ids,          options); }
-    }
+    };
     
     // http://mite.yo.lk/en/api/projects.html
     Project = {
@@ -180,7 +180,7 @@
       update            : function(id, params, options)  { return    _put('projects/'+id,       {project: params},  options); },
       destroy            : function(id, options)          { return _destroy('projects/'+id,                           options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?project_id='+ids,           options); }
-    }
+    };
     
     // http://mite.yo.lk/en/api/services.html
     Service = {
@@ -191,7 +191,7 @@
       update            : function(id, params, options)  { return    _put('services/'+id,       {service: params},  options); },
       destroy            : function(id, options)          { return _destroy('services/'+id,                           options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?service_id='+ids,           options); }
-    }
+    };
     
     // http://mite.yo.lk/en/api/users.html
     User = {
@@ -203,7 +203,7 @@
       create            : not_allowed,
       update            : not_allowed,
       destroy            : not_allowed
-    }
+    };
     
     // Public
     Interface = function(options) {
