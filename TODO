@@ -12,6 +12,10 @@
 
   Try to find out the reason behind Firefox returning status code 0 and a smarter solution then
   the current one.
+  
+  SEE
+  
+  https://bugzilla.mozilla.org/show_bug.cgi?id=580353
 
 * How to handle xhr.status == 0?
 * Add test for create, update, delete operations.
