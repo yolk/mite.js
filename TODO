@@ -1,2 +1,17 @@
+* PROBLEM
+
+  Firefox returns status code 0, if there is an error, instead of 401, 404, 500 etc. 
+  It also does not return the response text, which could be used as a fallback when status code is 0.
+
+  CURRENT SOLUTION
+
+  corsapi.mite.yo.lk does return a status code 200 if there has been an error and puts the status
+  code in the response body. mite.query checks the response body for possible issues.
+
+  TODO
+
+  Try to find out the reason behind Firefox returning status code 0 and a smarter solution then
+  the current one.
+
 * How to handle xhr.status == 0?
 * Add test for create, update, delete operations.

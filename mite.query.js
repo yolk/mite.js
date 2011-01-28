@@ -1,8 +1,12 @@
 (function(window) {  
-  var defaults  = { protocol : 'https'
+  var nada = function() {},
+      defaults  = { protocol : 'https'
                   , domain   : 'mite.yo.lk'
+                  , account  : ''
+                  , api_key  : ''
                   , async    : true
                   , timeout  : 60 // 1 minute
+                  , onerror  : nada
                   };
   
   window.miteQuery = (function() {
@@ -13,8 +17,7 @@
         _request, _get, _post, _put, _destroy,
         _buildQuery, _parse,
         account, myself, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
-        config = {},
-        nada = function() {};
+        config = {};
     
     // build URL for API request
     get_url_for = function(path) {
@@ -55,21 +58,45 @@
           async       = (typeof options.async == 'boolean') ? options.async : config.async,
           timeout     = options.timeout   || config.timeout,
           onsuccess   = options.success   || nada,
-          onerror     = options.error     || nada,
+          onerror     = options.error     || config.onerror,
           oncomplete  = options.complete  || nada,
-          timeout_handler;
+          timeout_handler, user_input;
           
       xhr.onreadystatechange = function(){
+        var status = 200;
         if (xhr.readyState == 4) {
           
-          if (/2\d\d/.test(xhr.status) || xhr.status == 0) {
-            if(xhr.responseText) {
-              onsuccess( json_parse(xhr.responseText) );
-            } else {
+          
+          // corsapi.mite.yo.lk does always return a 200 status code due to a
+          // Firefox bug, that always returns a status code 0 if there is an error.
+          if (/^\d\d\d$/.test(xhr.responseText)) status = parseInt(xhr.responseText, 10);
+          
+          switch(status) {
+            case 200:
+              if(xhr.responseText) {
+                onsuccess( json_parse(xhr.responseText) );
+              } else {
+                onerror(xhr, xhr.responseText || 'error');
+              }
+              break;
+            case 401:
+              user_input = prompt('Could not login. Please confirm your API key:', config.api_key);
+              xhr.abort();
+              if (user_input && user_input != config.api_key) {
+                config.api_key = user_input;
+                _request(method, path, options);
+              }
+              break;
+            case 404:
+              user_input = prompt('Could not find your account ('+config.protocol + '://' + config.account + '.' + config.domain+'):', config.account);
+              xhr.abort();
+              if (user_input && user_input != config.api_key) {
+                config.account = user_input;
+                _request(method, path, options);
+              }
+              break;
+            default:
               onerror(xhr, xhr.responseText || 'error');
-            }
-          } else {
-            onerror(xhr, xhr.responseText || 'error');
           }
           oncomplete(xhr);
           if (timeout_handler) clearTimeout(timeout_handler);
@@ -213,12 +240,11 @@
       
       config.protocol = options.protocol || defaults.protocol;
       config.domain   = options.domain   || defaults.domain;
+      config.account  = options.account  || defaults.account;
+      config.api_key  = options.api_key  || defaults.api_key;
+      config.async    = options.async    || defaults.async;
       config.timeout  = options.timeout  || defaults.timeout;
-      
-      config.async    = (typeof options.async != 'undefined') ? options.async : defaults.async;
-
-      config.account  = options.account;
-      config.api_key  = options.api_key;
+      config.onerror  = options.onerror  || defaults.timeout;
       
       this.config     = config;
     };
