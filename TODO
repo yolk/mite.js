@@ -5,17 +5,15 @@
 
   CURRENT SOLUTION
 
-  corsapi.mite.yo.lk does return a status code 200 if there has been an error and puts the status
-  code in the response body. mite.query checks the response body for possible issues.
+  Any other code than 2XX are treated as error, without differentiation.
 
   TODO
 
   Try to find out the reason behind Firefox returning status code 0 and a smarter solution then
-  the current one.
+  the current one for a better error handling.
   
   SEE
   
   https://bugzilla.mozilla.org/show_bug.cgi?id=580353
 
-* How to handle xhr.status == 0?
 * Add test for create, update, delete operations.
