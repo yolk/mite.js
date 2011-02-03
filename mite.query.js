@@ -5,7 +5,7 @@
                   , api_key  : ''
                   , async    : true
                   , timeout  : 60 // 1 minute
-                  , onerror  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!')}
+                  , onerror  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');}
                   };
   
   window.miteQuery = (function() {
@@ -47,6 +47,7 @@
     _parse = function(options) {
       if (!options) options = {};
       if (typeof options == 'function') { options = {success: options}; };
+      
       return options;
     };
     
@@ -81,7 +82,7 @@
         onerror(xhr, 'timeout');
       }, timeout * 1000);
       
-      xhr.open(method,get_url_for(path),async);
+      xhr.open(method,path,async);
       if (data instanceof Object) {
         data = JSON.stringify(data);
         xhr.setRequestHeader('Content-Type','application/json');
@@ -96,10 +97,18 @@
     };
     
     // GET request
-    _get = function(path, options) {
-      var parsed_options  = _parse(options),
-          separator       = /\?/.test(path) ? '&' : '?';
+    _get = function(path, params, options) {
+      var parsed_options,
+          separator = /\?/.test(path) ? '&' : '?';
       
+      if (typeof options == 'undefined') {
+        parsed_options = _parse(params);
+      } else {
+        parsed_options = _parse(options);
+        parsed_options.data = params;
+      }
+      
+      path = get_url_for(path);
       if (parsed_options.data) {
         path += separator + _buildQuery(parsed_options.data);
         delete(parsed_options.data); 
@@ -112,19 +121,19 @@
     _post = function(path, params, options) {
       var parsed_options  = _parse(options);
       parsed_options.data = params;
-      return _request('POST', path, parsed_options);
+      return _request('POST', get_url_for(path), parsed_options);
     };
     
     // PUT request
     _put = function(path, params, options) {
       var parsed_options  = _parse(options);
       parsed_options.data = params;
-      return _request('PUT', path, parsed_options);
+      return _request('PUT', get_url_for(path), parsed_options);
     };
     
     // destroy request
     _destroy = function(path, options) {
-      return _request('DELETE', path, _parse(options));
+      return _request('DELETE', get_url_for(path), _parse(options));
     };
     
     // http://mite.yo.lk/en/api/account.html
@@ -134,18 +143,18 @@
     // http://mite.yo.lk/en/api/time-entries.html
     // see also: http://mite.yo.lk/en/api/grouped-time-entries.html
     TimeEntry = {
-      all               : function(options)              { return    _get('time_entries',                           options); },
+      all               : function(params, options)      { return    _get('time_entries',                   params, options); },
       find              : function(id, options)          { return    _get('time_entries/'+id,                       options); },
-      create            : function(params, options)      { return    _post('time_entries',     {time_entry: params}, options); },
+      create            : function(params, options)      { return    _post('time_entries',    {time_entry: params}, options); },
       update            : function(id, params, options)  { return    _put('time_entries/'+id, {time_entry: params}, options); },
-      destroy            : function(id, options)         { return    _destroy('time_entries/'+id,                       options); }
+      destroy            : function(id, options)         { return    _destroy('time_entries/'+id,                   options); }
     };
     
     // http://mite.yo.lk/en/api/tracker.html
     Tracker = {
       find              : function(options)              { return    _get('tracker',                                options); },
       start             : function(id, options)          { return    _put('tracker/'+id,                        {}, options); },
-      stop              : function(id, options)          { return    _destroy('tracker/'+id,                            options); }
+      stop              : function(id, options)          { return    _destroy('tracker/'+id,                        options); }
     };
     
     // http://mite.yo.lk/en/api/bookmarks.html
@@ -166,21 +175,21 @@
       active            : function(options)              { return    _get('customers',                              options); },
       archived          : function(options)              { return    _get('customers/archived',                     options); },
       find              : function(id, options)          { return    _get('customers/'+id,                          options); },
-      create            : function(params, options)      { return    _post('customers',          {customer: params}, options); },
+      create            : function(params, options)      { return    _post('customers',         {customer: params}, options); },
       update            : function(id, params, options)  { return    _put('customers/'+id,      {customer: params}, options); },
-      destroy            : function(id, options)         { return    _destroy('customers/'+id,                          options); },
+      destroy            : function(id, options)         { return    _destroy('customers/'+id,                      options); },
       projects_for      : function(ids, options)         { return    _get('projects?customer_id='+ids,              options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?customer_id='+ids,          options); }
     };
     
     // http://mite.yo.lk/en/api/projects.html
     Project = {
-      active            : function(options)              { return    _get('projects',                               options); },
-      archived          : function(options)              { return    _get('projects/archived',                      options); },
+      active            : function(params, options)      { return    _get('projects',                       params, options); },
+      archived          : function(params, options)      { return    _get('projects/archived',              params, options); },
       find              : function(id, options)          { return    _get('projects/'+id,                           options); },
-      create            : function(params, options)      { return    _post('projects',           {project: params},  options); },
-      update            : function(id, params, options)  { return    _put('projects/'+id,       {project: params},  options); },
-      destroy            : function(id, options)         { return    _destroy('projects/'+id,                           options); },
+      create            : function(params, options)      { return    _post('projects',           {project: params}, options); },
+      update            : function(id, params, options)  { return    _put('projects/'+id,        {project: params}, options); },
+      destroy            : function(id, options)         { return    _destroy('projects/'+id,                       options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?project_id='+ids,           options); }
     };
     
@@ -189,9 +198,9 @@
       active            : function(options)              { return    _get('services',                               options); },
       archived          : function(options)              { return    _get('services/archived',                      options); },
       find              : function(id, options)          { return    _get('services/'+id,                           options); },
-      create            : function(params, options)      { return    _post('services',           {service: params},  options); },
-      update            : function(id, params, options)  { return    _put('services/'+id,       {service: params},  options); },
-      destroy            : function(id, options)         { return    _destroy('services/'+id,                           options); },
+      create            : function(params, options)      { return    _post('services',           {service: params}, options); },
+      update            : function(id, params, options)  { return    _put('services/'+id,        {service: params}, options); },
+      destroy            : function(id, options)         { return    _destroy('services/'+id,                       options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?service_id='+ids,           options); }
     };
     
