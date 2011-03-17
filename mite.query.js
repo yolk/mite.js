@@ -15,7 +15,7 @@
     var get_url_for, json_parse,
         _request, _get, _post, _put, _destroy,
         _buildQuery, _parse, _extend,
-        account, myself, Base, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
+        account, myself, Base, ActiveArchivedBase, OnlyReadable, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
         config = {}, nada = function() {};
     
     // build URL for API request
@@ -44,8 +44,10 @@
       return options || {};
     };
     
-    _extend = function(obj, source) {
-      for (var prop in source) { obj[prop] = source[prop]; }
+    _extend = function(obj) {
+      for(var i = 1, len = arguments.length; i < len; i++ ) {
+        for (var prop in arguments[i]) { obj[prop] = arguments[i][prop]; }
+      }
     	return obj;
     };
     
@@ -145,21 +147,29 @@
     Base = {
       _name             : function()                     { return this._url.replace(/s$/, "").replace(/ie$/, "y"); },
       _wrapParams       : function()                     { params[this._name()] = params; return params; },
-      active            : function(params, options)      { return    _get(this._url,                    params, options); },
-      archived          : function(params, options)      { return    _get(this._url + "/archived",      params, options); },
+      all               : function(params, options)      { return    _get(this._url,                    params, options); },
       find              : function(id, options)          { return    _get(this._url + "/" + id,                 options); },
       create            : function(params, options)      { return    _post(this._url, this._wrapParams(params), options); },
       update            : function(id, params, options)  { return    _put(this._url + id,               params, options); },
       destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,           options); }
     };
+    
+    ActiveArchivedBase = _extend({
+      all               : undefined,
+      active            : Base.all,
+      archived          : function(params, options)      { return    _get(this._url + "/archived",      params, options); }
+    }, Base);
+    
+    OnlyReadable = {
+      create            : undefined,
+      update            : undefined,
+      destroy           : undefined
+    };
 
     // http://mite.yo.lk/en/api/time-entries.html
     // see also: http://mite.yo.lk/en/api/grouped-time-entries.html
     TimeEntry = _extend({
-      _url      : 'time_entries',
-      all       : Base.active,
-      active    : undefined,
-      archived  : undefined
+      _url      : 'time_entries'
     }, Base);
     
     // http://mite.yo.lk/en/api/tracker.html
@@ -172,15 +182,9 @@
     // http://mite.yo.lk/en/api/bookmarks.html
     Bookmark = _extend({
       _url              : 'time_entries/bookmarks',
-      all               : Base.active,
-      active            : undefined,
-      archived          : undefined,
-      create            : undefined,
-      update            : undefined,
-      destroy           : undefined,
       // TODO fix me (I guess it relates to the redirect)
       time_entries_for  : function(id, options)          { return    _get(this._url + '/' + id + '/follow',   options); }
-    }, Base);
+    }, Base, OnlyReadable);
     
         
     // http://mite.yo.lk/en/api/customers.html
@@ -188,28 +192,25 @@
       _url              : 'customers',
       projects_for      : function(ids, options)         { return    _get('projects?customer_id='+ids,              options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?customer_id='+ids,          options); }
-    }, Base);
+    }, ActiveArchivedBase);
     
     // http://mite.yo.lk/en/api/projects.html
     Project = _extend({
       _url              : 'projects',
       time_entries_for  : function(ids, options)         { return    _get('time_entries?project_id='+ids,           options); }
-    }, Base);
+    }, ActiveArchivedBase);
     
     // http://mite.yo.lk/en/api/services.html
     Service = _extend({
       _url              : 'services',
       time_entries_for  : function(ids, options)         { return    _get('time_entries?service_id='+ids,           options); }
-    }, Base);
+    }, ActiveArchivedBase);
     
     // http://mite.yo.lk/en/api/users.html
     User = _extend({
       _url              : 'users',
-      create            : undefined,
-      update            : undefined,
-      destroy           : undefined,
       time_entries_for  : function(ids, options)         { return    _get('time_entries?user_id='+ids,              options); }
-    }, Base);
+    }, ActiveArchivedBase, OnlyReadable);
     
     //// 
     //  Public
