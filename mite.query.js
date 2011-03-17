@@ -147,6 +147,7 @@
       update            : function(id, params, options)  { return    _put(this._url + id,               params, options); },
       destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,             options); },
       cache             : function(method) {
+        if(!this._url) { return this.apply(method, Array.prototype.slice.call(arguments, 1)); }
         if(!_cache[this._url] || !_cache[this._url][method]) {
           _cache[this._url] = _cache[this._url] || {};
           _cache[this._url][method] = this.apply(method, Array.prototype.slice.call(arguments, 1));
@@ -154,6 +155,7 @@
         return _cache[this._url][method];
       },
       clearCache       : function() {
+        if(!this._url) { return; }
         _cache[this._url] = undefined;
       }
     },
@@ -215,6 +217,7 @@
       }, ActiveArchivedBase, OnlyReadable),
       config      : config,
       clearCache  : function(kind) {
+        if(!this._url) { return; }
         if(kind) {
           _cache[kind] = undefined;
         } else {
