@@ -12,7 +12,7 @@
     
     ////
     //  Private
-    var get_url_for, json_parse, not_allowed,
+    var get_url_for, json_parse,
         _request, _get, _post, _put, _destroy,
         _buildQuery, _parse, _extend,
         account, myself, Base, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
@@ -27,11 +27,6 @@
     json_parse = function(string) {
       return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string);
     };
-    
-    // through Errors for operations that are not allowed over the mite.API
-    not_allowed = function() {
-      throw new Error('not allowed over API');
-    };  
     
     // build a query out of an associative array
     _buildQuery = function(json) {
@@ -180,9 +175,9 @@
       all               : Base.active,
       active            : undefined,
       archived          : undefined,
-      create            : not_allowed,
-      update            : not_allowed,
-      destroy           : not_allowed,
+      create            : undefined,
+      update            : undefined,
+      destroy           : undefined,
       // TODO fix me (I guess it relates to the redirect)
       time_entries_for  : function(id, options)          { return    _get(this._url + '/' + id + '/follow',   options); }
     }, Base);
@@ -210,9 +205,9 @@
     // http://mite.yo.lk/en/api/users.html
     User = _extend({
       _url              : 'users',
-      create            : not_allowed,
-      update            : not_allowed,
-      destroy           : not_allowed,
+      create            : undefined,
+      update            : undefined,
+      destroy           : undefined,
       time_entries_for  : function(ids, options)         { return    _get('time_entries?user_id='+ids,              options); }
     }, Base);
     
