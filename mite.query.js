@@ -195,7 +195,8 @@
       User      : _extend({
         _url              : 'users',
         time_entries_for  : function(ids, options)         { return    _get('time_entries?user_id='+ids,              options); }
-      }, ActiveArchivedBase, OnlyReadable)
+      }, ActiveArchivedBase, OnlyReadable),
+      config    : config
     };
   };
 }(window));
