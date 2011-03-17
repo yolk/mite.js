@@ -8,14 +8,19 @@
   },
       _nada         = function() {},
       _parseJson    = function(string) { return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string); },
-      _buildQuery   = function(json) {
-        if (!json) { return ""; }
-    
-        var params = [];
-        for(key in json) {
-          params.push([encodeURIComponent(key),encodeURIComponent(json[key])].join('='));
+      _buildQuery   = function(params) {
+        if(!params) { return ""; }
+        if(typeof params == "String") { return params; }
+        
+        var queries = [];
+        for(key in params) {
+          if(key == '_queryString') {
+            queries.push(params[key]);
+          } else {
+            queries.push([encodeURIComponent(key),encodeURIComponent(params[key])].join('=')); 
+          }
         }
-        return params.join('&');
+        return queries.join('&');
       },
       _parseOptions = function(options) {
         if(typeof options == 'function') { options = {success: options}; }
