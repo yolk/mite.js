@@ -147,7 +147,7 @@
       find              : function(id, options)          { return    _get('time_entries/'+id,                       options); },
       create            : function(params, options)      { return    _post('time_entries',    {time_entry: params}, options); },
       update            : function(id, params, options)  { return    _put('time_entries/'+id, {time_entry: params}, options); },
-      destroy            : function(id, options)         { return    _destroy('time_entries/'+id,                   options); }
+      destroy           : function(id, options)          { return    _destroy('time_entries/'+id,                   options); }
     };
     
     // http://mite.yo.lk/en/api/tracker.html
@@ -167,7 +167,7 @@
       
       create            : not_allowed,
       update            : not_allowed,
-      destroy            : not_allowed
+      destroy           : not_allowed
     };
         
     // http://mite.yo.lk/en/api/customers.html
@@ -177,7 +177,7 @@
       find              : function(id, options)          { return    _get('customers/'+id,                          options); },
       create            : function(params, options)      { return    _post('customers',         {customer: params}, options); },
       update            : function(id, params, options)  { return    _put('customers/'+id,      {customer: params}, options); },
-      destroy            : function(id, options)         { return    _destroy('customers/'+id,                      options); },
+      destroy           : function(id, options)          { return    _destroy('customers/'+id,                      options); },
       projects_for      : function(ids, options)         { return    _get('projects?customer_id='+ids,              options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?customer_id='+ids,          options); }
     };
@@ -189,7 +189,7 @@
       find              : function(id, options)          { return    _get('projects/'+id,                           options); },
       create            : function(params, options)      { return    _post('projects',           {project: params}, options); },
       update            : function(id, params, options)  { return    _put('projects/'+id,        {project: params}, options); },
-      destroy            : function(id, options)         { return    _destroy('projects/'+id,                       options); },
+      destroy           : function(id, options)          { return    _destroy('projects/'+id,                       options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?project_id='+ids,           options); }
     };
     
@@ -200,7 +200,7 @@
       find              : function(id, options)          { return    _get('services/'+id,                           options); },
       create            : function(params, options)      { return    _post('services',           {service: params}, options); },
       update            : function(id, params, options)  { return    _put('services/'+id,        {service: params}, options); },
-      destroy            : function(id, options)         { return    _destroy('services/'+id,                       options); },
+      destroy           : function(id, options)          { return    _destroy('services/'+id,                       options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?service_id='+ids,           options); }
     };
     
@@ -213,7 +213,7 @@
     
       create            : not_allowed,
       update            : not_allowed,
-      destroy            : not_allowed
+      destroy           : not_allowed
     };
     
     //// 
