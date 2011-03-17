@@ -45,10 +45,8 @@
     };
     
     _parse = function(options) {
-      if (!options) { options = {}; }
       if(typeof options == 'function') { options = {success: options}; }
-      
-      return options;
+      return options || {};
     };
     
     _extend = function(obj, source) {
