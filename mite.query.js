@@ -35,7 +35,7 @@
     
     // build a query out of an associative array
     _buildQuery = function(json) {
-      if (!json) return "";
+      if (!json) { return ""; }
       
       var params = [];
       for(key in json) {
@@ -45,8 +45,8 @@
     };
     
     _parse = function(options) {
-      if (!options) options = {};
-      if (typeof options == 'function') { options = {success: options}; };
+      if (!options) { options = {}; }
+      if(typeof options == 'function') { options = {success: options}; }
       
       return options;
     };
@@ -74,13 +74,15 @@
             error(xhr, xhr.responseText || 'error');
           }
           complete(xhr);
-          if (timeout_handler) clearTimeout(timeout_handler);
+          clearTimeout(timeout_handler);
         }
       };
       
-      if (options.error) timeout_handler = setTimeout(function() {
-        error(xhr, 'timeout');
-      }, timeout * 1000);
+      if (options.error) {
+        timeout_handler = setTimeout(function() {
+          error(xhr, 'timeout');
+        }, timeout * 1000);
+      }
       
       xhr.open(method,path,async);
       if (data instanceof Object) {
@@ -93,7 +95,9 @@
       xhr.setRequestHeader("X-MiteAccount", config.account);     
       xhr.send(data);
       
-      if (!config.async) return json_parse(xhr.responseText);
+      if (!config.async) {
+        return json_parse(xhr.responseText);
+      }
     };
     
     // GET request
@@ -219,7 +223,9 @@
     //// 
     //  Public
     var Interface = function(options) {
-      if (!options || !options.account || !options.api_key) throw "account & api_key need to be set";
+      if (!options || !options.account || !options.api_key) {
+        throw "account & api_key need to be set";
+      }
       
       config.protocol = options.protocol || defaults.protocol;
       config.domain   = options.domain   || defaults.domain;
