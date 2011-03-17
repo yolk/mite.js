@@ -37,6 +37,8 @@
     //  Private
     var config = _extend({}, _defaults, options),
     
+    _cache = {},
+    
     // build URL for API request
     _buildUrl = function(path) {
       return config.protocol + '://' + 'corsapi.' + config.domain + '/' + path + '.json';
@@ -138,7 +140,17 @@
       find              : function(id, options)          { return    _get(this._url + "/" + id,                 options); },
       create            : function(params, options)      { return    _post(this._url, this._wrapParams(params), options); },
       update            : function(id, params, options)  { return    _put(this._url + id,               params, options); },
-      destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,           options); }
+      destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,             options); },
+      cache             : function(method) {
+        if(!_cache[this._url] || !_cache[this._url][method]) {
+          _cache[this._url] = _cache[this._url] || {};
+          _cache[this._url][method] = this.apply(method, Array.prototype.slice.call(arguments, 1));
+        }
+        return _cache[this._url][method];
+      },
+      clearCache       : function() {
+        _cache[this._url] = undefined;
+      }
     },
     
     ActiveArchivedBase = _extend({
@@ -157,46 +169,53 @@
     //  Public
     return {
       // http://mite.yo.lk/en/api/account.html
-      account   : function(options)              { return    _get('account',                            options); },
-      myself    : function(options)              { return    _get('myself',                             options); },
+      account     : function(options)              { return    _get('account',                            options); },
+      myself      : function(options)              { return    _get('myself',                             options); },
       // http://mite.yo.lk/en/api/time-entries.html & http://mite.yo.lk/en/api/grouped-time-entries.html
-      TimeEntry : _extend({
+      TimeEntry   : _extend({
         _url      : 'time_entries'
       }, Base),
       // http://mite.yo.lk/en/api/tracker.html
-      Tracker   : {
+      Tracker     : {
         find              : function(options)              { return    _get('tracker',                                options); },
         start             : function(id, options)          { return    _put('tracker/'+id,                        {}, options); },
         stop              : function(id, options)          { return    _destroy('tracker/'+id,                        options); }
       },
       // http://mite.yo.lk/en/api/bookmarks.html
-      Bookmark  : Bookmark = _extend({
+      Bookmark    : Bookmark = _extend({
         _url              : 'time_entries/bookmarks',
         // TODO fix me (I guess it relates to the redirect)
         time_entries_for  : function(id, options)          { return    _get(this._url + '/' + id + '/follow',   options); }
       }, Base, OnlyReadable),
       // http://mite.yo.lk/en/api/customers.html
-      Customer  : _extend({
+      Customer    : _extend({
         _url              : 'customers',
         projects_for      : function(ids, options)         { return    _get('projects?customer_id='+ids,              options); },
         time_entries_for  : function(ids, options)         { return    _get('time_entries?customer_id='+ids,          options); }
       }, ActiveArchivedBase),
       // http://mite.yo.lk/en/api/projects.html
-      Project   : _extend({
+      Project     : _extend({
         _url              : 'projects',
         time_entries_for  : function(ids, options)         { return    _get('time_entries?project_id='+ids,           options); }
       }, ActiveArchivedBase),
       // http://mite.yo.lk/en/api/services.html
-      Service   : _extend({
+      Service     : _extend({
         _url              : 'services',
         time_entries_for  : function(ids, options)         { return    _get('time_entries?service_id='+ids,           options); }
       }, ActiveArchivedBase),
       // http://mite.yo.lk/en/api/users.html
-      User      : _extend({
+      User        : _extend({
         _url              : 'users',
         time_entries_for  : function(ids, options)         { return    _get('time_entries?user_id='+ids,              options); }
       }, ActiveArchivedBase, OnlyReadable),
-      config    : config
+      config      : config,
+      clearCache  : function(kind) {
+        if(kind) {
+          _cache[kind] = undefined;
+        } else {
+          _cache = {};
+        }
+      }
     };
   };
 }(window));
