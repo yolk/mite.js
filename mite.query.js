@@ -68,7 +68,7 @@
             if(xhr.responseText) {
               onsuccess( json_parse(xhr.responseText) );
             } else {
-              onerror(xhr, xhr.responseText || 'error');
+              onerror(xhr, 'error');
             }
           } else {
             onerror(xhr, xhr.responseText || 'error');
