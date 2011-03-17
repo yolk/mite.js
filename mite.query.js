@@ -12,22 +12,18 @@
     
     ////
     //  Private
-    var _buildUrl, _parseJson,
-        _request, _get, _post, _put, _destroy,
-        _buildQuery, _parseOptions, _extend,
-        account, myself, Base, ActiveArchivedBase, OnlyReadable, 
-        TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
-        config = {}, nada = function() {};
+    var config = {}, 
+        nada   = function() {},
     
     // build URL for API request
     _buildUrl = function(path) {
       return config.protocol + '://' + 'corsapi.' + config.domain + '/' + path + '.json';
-    };
+    },
     
     // parse string to JSON
     _parseJson = function(string) {
       return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string);
-    };
+    },
     
     // build a query out of an associative array
     _buildQuery = function(json) {
@@ -38,19 +34,19 @@
         params.push([encodeURIComponent(key),encodeURIComponent(json[key])].join('='));
       }
       return params.join('&');
-    };
+    },
     
     _parseOptions = function(options) {
       if(typeof options == 'function') { options = {success: options}; }
       return options || {};
-    };
+    },
     
     _extend = function(obj) {
       for(var i = 1, len = arguments.length; i < len; i++ ) {
         for (var prop in arguments[i]) { obj[prop] = arguments[i][prop]; }
       }
     	return obj;
-    };
+    },
     
     // ajax call wrapper
     _request = function(method, path, options) {
@@ -99,7 +95,7 @@
       if (!config.async) {
         return _parseJson(xhr.responseText);
       }
-    };
+    },
     
     // GET request
     _get = function(path, params, options) {
@@ -120,30 +116,30 @@
       }
       
       return _request('GET', path, parsed_options);
-    };
+    },
     
     // POST request
     _post = function(path, params, options) {
       var parsed_options  = _parseOptions(options);
       parsed_options.data = params;
       return _request('POST', _buildUrl(path), parsed_options);
-    };
+    },
     
     // PUT request
     _put = function(path, params, options) {
       var parsed_options  = _parseOptions(options);
       parsed_options.data = params;
       return _request('PUT', _buildUrl(path), parsed_options);
-    };
+    },
     
-    // destroy request
+    // DELETE request
     _destroy = function(path, options) {
       return _request('DELETE', _buildUrl(path), _parseOptions(options));
-    };
+    },
     
     // http://mite.yo.lk/en/api/account.html
-    account             = function(options)              { return    _get('account',                            options); };
-    myself              = function(options)              { return    _get('myself',                             options); };
+    account             = function(options)              { return    _get('account',                            options); },
+    myself              = function(options)              { return    _get('myself',                             options); },
 
     Base = {
       _name             : function()                     { return this._url.replace(/s$/, "").replace(/ie$/, "y"); },
@@ -153,39 +149,39 @@
       create            : function(params, options)      { return    _post(this._url, this._wrapParams(params), options); },
       update            : function(id, params, options)  { return    _put(this._url + id,               params, options); },
       destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,           options); }
-    };
+    },
     
     ActiveArchivedBase = _extend({
       all               : undefined,
       active            : Base.all,
       archived          : function(params, options)      { return    _get(this._url + "/archived",      params, options); }
-    }, Base);
+    }, Base),
     
     OnlyReadable = {
       create            : undefined,
       update            : undefined,
       destroy           : undefined
-    };
+    },
 
     // http://mite.yo.lk/en/api/time-entries.html
     // see also: http://mite.yo.lk/en/api/grouped-time-entries.html
     TimeEntry = _extend({
       _url      : 'time_entries'
-    }, Base);
+    }, Base),
     
     // http://mite.yo.lk/en/api/tracker.html
     Tracker = {
       find              : function(options)              { return    _get('tracker',                                options); },
       start             : function(id, options)          { return    _put('tracker/'+id,                        {}, options); },
       stop              : function(id, options)          { return    _destroy('tracker/'+id,                        options); }
-    };
+    },
     
     // http://mite.yo.lk/en/api/bookmarks.html
     Bookmark = _extend({
       _url              : 'time_entries/bookmarks',
       // TODO fix me (I guess it relates to the redirect)
       time_entries_for  : function(id, options)          { return    _get(this._url + '/' + id + '/follow',   options); }
-    }, Base, OnlyReadable);
+    }, Base, OnlyReadable),
     
         
     // http://mite.yo.lk/en/api/customers.html
@@ -193,29 +189,29 @@
       _url              : 'customers',
       projects_for      : function(ids, options)         { return    _get('projects?customer_id='+ids,              options); },
       time_entries_for  : function(ids, options)         { return    _get('time_entries?customer_id='+ids,          options); }
-    }, ActiveArchivedBase);
+    }, ActiveArchivedBase),
     
     // http://mite.yo.lk/en/api/projects.html
     Project = _extend({
       _url              : 'projects',
       time_entries_for  : function(ids, options)         { return    _get('time_entries?project_id='+ids,           options); }
-    }, ActiveArchivedBase);
+    }, ActiveArchivedBase),
     
     // http://mite.yo.lk/en/api/services.html
     Service = _extend({
       _url              : 'services',
       time_entries_for  : function(ids, options)         { return    _get('time_entries?service_id='+ids,           options); }
-    }, ActiveArchivedBase);
+    }, ActiveArchivedBase),
     
     // http://mite.yo.lk/en/api/users.html
     User = _extend({
       _url              : 'users',
       time_entries_for  : function(ids, options)         { return    _get('time_entries?user_id='+ids,              options); }
-    }, ActiveArchivedBase, OnlyReadable);
+    }, ActiveArchivedBase, OnlyReadable),
     
     //// 
     //  Public
-    var Interface = function(options) {
+    Interface = function(options) {
       if (!options || !options.account || !options.api_key) {
         throw "account & api_key need to be set";
       }
@@ -243,6 +239,7 @@
       Service   : Service,
       User      : User
     };
+    
     return Interface;
   }());
 }(window));
