@@ -9,8 +9,7 @@
       _nada         = function() {},
       _parseJson    = function(string) { return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string); },
       _buildQuery   = function(params) {
-        if(!params) { return ""; }
-        if(typeof params == "String") { return params; }
+        if(!params || typeof params == "String") { return params || ""; }
         
         var queries = [];
         for(key in params) {
