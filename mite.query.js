@@ -5,7 +5,7 @@
                   , api_key  : ''
                   , async    : true
                   , timeout  : 60 // 1 minute
-                  , onerror  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');}
+                  , error  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');}
                   };
   
   window.miteQuery = (function() {
@@ -57,29 +57,29 @@
           data        = options.data      || null,
           async       = (typeof options.async == 'boolean') ? options.async : config.async,
           timeout     = options.timeout   || config.timeout,
-          onsuccess   = options.success   || nada,
-          onerror     = options.error     || config.onerror,
-          oncomplete  = options.complete  || nada,
+          success     = options.success   || nada,
+          error       = options.error     || config.error,
+          complete    = options.complete  || nada,
           timeout_handler, user_input;
           
       xhr.onreadystatechange = function(){
         if (xhr.readyState == 4) {
           if (/2\d\d/.test(xhr.status)) {
             if(xhr.responseText) {
-              onsuccess( json_parse(xhr.responseText) );
+              success( json_parse(xhr.responseText) );
             } else {
-              onerror(xhr, 'error');
+              error(xhr, 'error');
             }
           } else {
-            onerror(xhr, xhr.responseText || 'error');
+            error(xhr, xhr.responseText || 'error');
           }
-          oncomplete(xhr);
+          complete(xhr);
           if (timeout_handler) clearTimeout(timeout_handler);
         }
       };
       
       if (options.error) timeout_handler = setTimeout(function() {
-        onerror(xhr, 'timeout');
+        error(xhr, 'timeout');
       }, timeout * 1000);
       
       xhr.open(method,path,async);
@@ -227,7 +227,7 @@
       config.api_key  = options.api_key  || defaults.api_key;
       config.async    = options.async    || defaults.async;
       config.timeout  = options.timeout  || defaults.timeout;
-      config.onerror  = options.onerror  || defaults.onerror;
+      config.error    = options.error  || defaults.error;
       
       this.config     = config;
     };
