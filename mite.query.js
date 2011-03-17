@@ -9,24 +9,24 @@
       _nada         = function() {},
       _parseJson    = function(string) { return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string); },
       _buildQuery   = function(json) {
-    if (!json) { return ""; }
+        if (!json) { return ""; }
     
-    var params = [];
-    for(key in json) {
-      params.push([encodeURIComponent(key),encodeURIComponent(json[key])].join('='));
-    }
-    return params.join('&');
-  },
+        var params = [];
+        for(key in json) {
+          params.push([encodeURIComponent(key),encodeURIComponent(json[key])].join('='));
+        }
+        return params.join('&');
+      },
       _parseOptions = function(options) {
-    if(typeof options == 'function') { options = {success: options}; }
-    return options || {};
-  },
+        if(typeof options == 'function') { options = {success: options}; }
+        return options || {};
+      },
       _extend       = function(obj) {
-    for(var i = 1, len = arguments.length; i < len; i++ ) {
-      for (var prop in arguments[i]) { obj[prop] = arguments[i][prop]; }
-    }
-    return obj;
-  };
+        for(var i = 1, len = arguments.length; i < len; i++ ) {
+          for (var prop in arguments[i]) { obj[prop] = arguments[i][prop]; }
+        }
+        return obj;
+      };
 
   window.miteQuery = function(options) {
     if (!options || !options.account || !options.api_key) {
