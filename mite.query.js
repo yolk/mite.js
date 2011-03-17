@@ -12,19 +12,20 @@
     
     ////
     //  Private
-    var get_url_for, json_parse,
+    var _buildUrl, _parseJson,
         _request, _get, _post, _put, _destroy,
-        _buildQuery, _parse, _extend,
-        account, myself, Base, ActiveArchivedBase, OnlyReadable, TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
+        _buildQuery, _parseOptions, _extend,
+        account, myself, Base, ActiveArchivedBase, OnlyReadable, 
+        TimeEntry, Tracker, Bookmark, Customer, Project, Service, User,
         config = {}, nada = function() {};
     
     // build URL for API request
-    get_url_for = function(path) {
+    _buildUrl = function(path) {
       return config.protocol + '://' + 'corsapi.' + config.domain + '/' + path + '.json';
     };
     
     // parse string to JSON
-    json_parse = function(string) {
+    _parseJson = function(string) {
       return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string);
     };
     
@@ -39,7 +40,7 @@
       return params.join('&');
     };
     
-    _parse = function(options) {
+    _parseOptions = function(options) {
       if(typeof options == 'function') { options = {success: options}; }
       return options || {};
     };
@@ -66,7 +67,7 @@
         if (xhr.readyState == 4) {
           if (/2\d\d/.test(xhr.status)) {
             if(xhr.responseText) {
-              success( json_parse(xhr.responseText) );
+              success( _parseJson(xhr.responseText) );
             } else {
               error(xhr, 'error');
             }
@@ -96,7 +97,7 @@
       xhr.send(data);
       
       if (!config.async) {
-        return json_parse(xhr.responseText);
+        return _parseJson(xhr.responseText);
       }
     };
     
@@ -106,13 +107,13 @@
           separator = /\?/.test(path) ? '&' : '?';
       
       if (typeof options == 'undefined') {
-        parsed_options = _parse(params);
+        parsed_options = _parseOptions(params);
       } else {
-        parsed_options = _parse(options);
+        parsed_options = _parseOptions(options);
         parsed_options.data = params;
       }
       
-      path = get_url_for(path);
+      path = _buildUrl(path);
       if (parsed_options.data) {
         path += separator + _buildQuery(parsed_options.data);
         delete(parsed_options.data); 
@@ -123,21 +124,21 @@
     
     // POST request
     _post = function(path, params, options) {
-      var parsed_options  = _parse(options);
+      var parsed_options  = _parseOptions(options);
       parsed_options.data = params;
-      return _request('POST', get_url_for(path), parsed_options);
+      return _request('POST', _buildUrl(path), parsed_options);
     };
     
     // PUT request
     _put = function(path, params, options) {
-      var parsed_options  = _parse(options);
+      var parsed_options  = _parseOptions(options);
       parsed_options.data = params;
-      return _request('PUT', get_url_for(path), parsed_options);
+      return _request('PUT', _buildUrl(path), parsed_options);
     };
     
     // destroy request
     _destroy = function(path, options) {
-      return _request('DELETE', get_url_for(path), _parse(options));
+      return _request('DELETE', _buildUrl(path), _parseOptions(options));
     };
     
     // http://mite.yo.lk/en/api/account.html
