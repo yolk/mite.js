@@ -41,6 +41,7 @@
     //  Private
     var config = _extend({}, _defaults, options),
     
+    _loading = {},
     _cache = {},
     
     // build URL for API request
@@ -54,23 +55,35 @@
           data        = options.data      || null,
           async       = (typeof options.async == 'boolean') ? options.async : config.async,
           timeout     = options.timeout   || config.timeout,
-          success     = options.success   || _nada,
-          error       = options.error     || config.error,
-          complete    = options.complete  || _nada,
           timeout_handler, user_input;
+      
+      var handle_complete = function(options) {
+        var success     = options.success   || _nada,
+            error       = options.error     || config.error,
+            complete    = options.complete  || _nada;
+        
+        if (/2\d\d/.test(xhr.status)) {
+          if(xhr.responseText) {
+            success( _parseJson(xhr.responseText) );
+          } else {
+            error(xhr, 'error');
+          }
+        } else {
+          error(xhr, xhr.responseText || 'error');
+        }
+        
+        complete(xhr);
+      }
           
       xhr.onreadystatechange = function(){
         if (xhr.readyState == 4) {
-          if (/2\d\d/.test(xhr.status)) {
-            if(xhr.responseText) {
-              success( _parseJson(xhr.responseText) );
-            } else {
-              error(xhr, 'error');
-            }
+          if (method == 'GET') {
+            for (var i=0; i < _loading[path].length; i++) handle_complete(_loading[path][i]);
+            delete _loading[path];
           } else {
-            error(xhr, xhr.responseText || 'error');
+            handle_complete(options)
           }
-          complete(xhr);
+          
           clearTimeout(timeout_handler);
         }
       };
@@ -115,7 +128,12 @@
         delete(parsed_options.data); 
       }
       
-      return _request('GET', path, parsed_options);
+      if (! _loading[path]) {
+        _loading[path] = [parsed_options];
+        return _request('GET', path, parsed_options);
+      } else {
+        _loading[path].push(parsed_options);
+      }
     },
     
     // POST request
@@ -144,19 +162,7 @@
       find              : function(id, options)          { return    _get(this._url + "/" + id,                 options); },
       create            : function(params, options)      { return    _post(this._url, this._wrapParams(params), options); },
       update            : function(id, params, options)  { return    _put(this._url + id,               params, options); },
-      destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,             options); },
-      cache             : function(method) {
-        if(!this._url) { return this.apply(method, Array.prototype.slice.call(arguments, 1)); }
-        if(!_cache[this._url] || !_cache[this._url][method]) {
-          _cache[this._url] = _cache[this._url] || {};
-          _cache[this._url][method] = this.apply(method, Array.prototype.slice.call(arguments, 1));
-        }
-        return _cache[this._url][method];
-      },
-      clearCache       : function() {
-        if(!this._url) { return; }
-        _cache[this._url] = undefined;
-      }
+      destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,             options); }
     },
     
     ActiveArchivedBase = _extend({

@@ -81,6 +81,10 @@
     
     $status.text('loading ...');
     load_myself();
+    load_myself();
+    load_myself();
+    load_myself();
+    load_myself();
   } // connect()
   </script>
 
@@ -95,8 +99,8 @@
         success: function(data){
           $myself.append(build_table_for('user', data));
           $('#connection-status').text('connected.');
-          $('.status', $myself).html(link_to('myself') + ' loaded.')
-          load_account();
+          $('.status', $myself).html(link_to('myself') + ' loaded #1.')
+          // load_account();
         },
         error: function(xhr, error) {
           alert('Something went wrong:\n' +error);
@@ -211,5 +215,9 @@
   } // build_table_for()
   </script>
   <script src='vendor/jquery-1.4.4.min.js'></script>
+  <script>
+    $('#input-account').val( location.search.match(/\baccount=([^\?\&]+)/) && location.search.match(/\baccount=([^\?\&]+)/).pop() )
+    $('#input-api_key').val( location.search.match(/\bapi_key=([^\?\&]+)/) && location.search.match(/\bapi_key=([^\?\&]+)/).pop() )
+  </script>
 </body>
 </html>
