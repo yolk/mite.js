@@ -65,6 +65,9 @@
   </form><!-- /setup -->
   
   <script>
+  function now() {
+    return (new Date()).getTime();
+  } // now()
   function connect() {
     var account = $('#input-account').val(),
         api_key = $('#input-api_key').val(),
@@ -81,10 +84,6 @@
     
     $status.text('loading ...');
     load_myself();
-    load_myself();
-    load_myself();
-    load_myself();
-    load_myself();
   } // connect()
   </script>
 
@@ -95,12 +94,12 @@
     function load_myself() {
       $myself = $('#myself');
       $myself.show();
-      Mite.myself({
+      Mite.cache.myself({
         success: function(data){
           $myself.append(build_table_for('user', data));
           $('#connection-status').text('connected.');
-          $('.status', $myself).html(link_to('myself') + ' loaded #1.')
-          // load_account();
+          $('.status', $myself).html(link_to('myself') + '.')
+          load_account();
         },
         error: function(xhr, error) {
           alert('Something went wrong:\n' +error);
@@ -158,12 +157,31 @@
     <p class="status">loading services ...</p>
   </div><!-- /services -->
   <script>
+    var profile_load_services;
     function load_services() {
       $services = $('#services');
       $services.show();
+      profile_load_services = now();
       Mite.Service.active(function(data) {
         $services.append(build_table_for('service', data));
-        $('.status', $services).html(link_to('services') + ' loaded.')
+        $('.status', $services).html(link_to('services') + ' loaded in ' + ((now() - profile_load_services) / 1000) + ' Seconds.')
+        load_services_from_cache();
+      })
+    } // load_services()
+  </script>
+  
+  <div id="services-from-cache" class="hide">
+    <p class="status">loading services from cache ...</p>
+  </div><!-- /services -->
+  <script>
+    var profile_load_services_from_cache;
+    function load_services_from_cache() {
+      $services = $('#services-from-cache');
+      $services.show();
+      profile_load_services_from_cache = now();
+      Mite.Service.active(function(data) {
+        $services.append(build_table_for('service', data));
+        $('.status', $services).html(link_to('services') + ' loaded from Cache in ' + ((now() - profile_load_services_from_cache) / 1000) + ' Seconds.')
       })
     } // load_services()
   </script>
