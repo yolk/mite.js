@@ -1,7 +1,7 @@
-mite.query
+mite.js
 ============
 
-mite.query is a wrapper for the RESTful mite.api
+mite.js is a wrapper for the RESTful mite.api
 
 mite allows standard Cross-Origin Resource Sharing (CORS) requests, which means
 you can access your mite account from any domain, e.g. using this mite.api wrapper.
@@ -84,4 +84,4 @@ requst are
 License
 -------
 
-mite.query is licensed unter the MIT license.
+mite.js is licensed unter the MIT license.
