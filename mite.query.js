@@ -160,7 +160,7 @@
         path = _buildUrl(path);
         if (parsed_options.data) {
           path += separator + _buildQuery(parsed_options.data);
-          delete(parsed_options.data); 
+          delete(parsed_options.data);
         }
 
         // let's avoid to send the same requests twice
@@ -177,18 +177,16 @@
         } else {
           _loading[path].push(parsed_options);
         }
-
-
       },
 
       Base = {
         _name             : function()                     { return this._url.replace(/s$/, "").replace(/ie$/, "y"); },
         _wrapParams       : function(params)               { var p = {}; p[this._name()] = params; return p; },
-        all               : function(params, options)      { return    _get(this._url,                    params, options); },
-        find              : function(id, options)          { return    _get(this._url + "/" + id,                 options); },
-        create            : function(params, options)      { return    _post(this._url, this._wrapParams(params), options); },
-        update            : function(id, params, options)  { return    _put(this._url + id,               params, options); },
-        destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,             options); }
+        all               : function(params, options)      { return    _get(this._url,                              params, options); },
+        find              : function(id, options)          { return    _get(this._url + "/" + id,                           options); },
+        create            : function(params, options)      { return    _post(this._url,           this._wrapParams(params), options); },
+        update            : function(id, params, options)  { return    _put(this._url + "/" + id, this._wrapParams(params), options); },
+        destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,                       options); }
       },
 
       ActiveArchivedBase = _extend({
