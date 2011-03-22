@@ -81,7 +81,7 @@
         complete(xhr);
 
         return response;
-      }
+      };
 
       xhr.onreadystatechange = function(){
         var _resp = null;
@@ -95,7 +95,7 @@
 
             delete _loading[path];
           } else {
-            handle_complete(options)
+            handle_complete(options);
           }
 
           clearTimeout(timeout_handler);
@@ -167,9 +167,9 @@
         if (! _loading[path]) {
           // shall we read from cache?
           if (cached_get_requests && _cache[path]) {
-            if (parsed_options.success  && _cache[path].success)  parsed_options.success.apply( null, _cache[path].success ) 
-            if (parsed_options.error    && _cache[path].error)    parsed_options.error.apply(   null, _cache[path].error ) 
-            if (parsed_options.complete && _cache[path].complete) parsed_options.complete.apply(null, _cache[path].complete ) 
+            if (parsed_options.success  && _cache[path].success)  parsed_options.success.apply( null, _cache[path].success );
+            if (parsed_options.error    && _cache[path].error)    parsed_options.error.apply(   null, _cache[path].error );
+            if (parsed_options.complete && _cache[path].complete) parsed_options.complete.apply(null, _cache[path].complete );
           } else {
             _loading[path] = [parsed_options];
             return _request('GET', path, parsed_options);
@@ -183,7 +183,7 @@
 
       Base = {
         _name             : function()                     { return this._url.replace(/s$/, "").replace(/ie$/, "y"); },
-        _wrapParams       : function()                     { params[this._name()] = params; return params; },
+        _wrapParams       : function(params)               { var p = {}; p[this._name()] = params; return p; },
         all               : function(params, options)      { return    _get(this._url,                    params, options); },
         find              : function(id, options)          { return    _get(this._url + "/" + id,                 options); },
         create            : function(params, options)      { return    _post(this._url, this._wrapParams(params), options); },
