@@ -4,7 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>mite.js tests</title>
 
-  <script src="../mite.js.js"></script>
+  <script src="../mite.js"></script>
   <style>
   body {
     font: 1em/1.4em Helvetica, Arial;
@@ -76,7 +76,7 @@
         protocol = 'https';
     
     try {
-      Mite = new miteQuery({account: account, api_key: api_key, domain: domain, protocol: protocol});
+      mite = new Mite({account: account, api_key: api_key, domain: domain, protocol: protocol});
     } catch(e) {
       alert(e);
       return;
@@ -94,7 +94,7 @@
     function load_myself() {
       $myself = $('#myself');
       $myself.show();
-      Mite.cache.myself({
+      mite.cache.myself({
         success: function(data){
           $myself.append(build_table_for('user', data));
           $('#connection-status').text('connected.');
@@ -115,7 +115,7 @@
     function load_account() {
       $account = $('#account');
       $account.show();
-      Mite.account(function(data){
+      mite.account(function(data){
         $account.append(build_table_for('account', data));
         $('.status', $account).html(link_to('account') + ' loaded.')
         load_customers();
@@ -130,7 +130,7 @@
     function load_customers() {
       $customers = $('#customers');
       $customers.show();
-      Mite.Customer.active(function(data) {
+      mite.Customer.active(function(data) {
         $customers.append(build_table_for('customer', data));
         $('.status', $customers).html(link_to('customers') + ' loaded.')
         load_projects();
@@ -145,7 +145,7 @@
     function load_projects() {
       $projects = $('#projects');
       $projects.show();
-      Mite.Project.active(function(data) {
+      mite.Project.active(function(data) {
         $projects.append(build_table_for('project', data));
         $('.status', $projects).html(link_to('projects') + ' loaded.')
         load_services();
@@ -162,7 +162,7 @@
       $services = $('#services');
       $services.show();
       profile_load_services = now();
-      Mite.Service.active(function(data) {
+      mite.Service.active(function(data) {
         $services.append(build_table_for('service', data));
         $('.status', $services).html(link_to('services') + ' loaded in ' + ((now() - profile_load_services) / 1000) + ' Seconds.')
         load_services_from_cache();
@@ -179,7 +179,7 @@
       $services = $('#services-from-cache');
       $services.show();
       profile_load_services_from_cache = now();
-      Mite.Service.active(function(data) {
+      mite.Service.active(function(data) {
         $services.append(build_table_for('service', data));
         $('.status', $services).html(link_to('services') + ' loaded from Cache in ' + ((now() - profile_load_services_from_cache) / 1000) + ' Seconds.')
       })
@@ -189,7 +189,7 @@
   
   <script>
   function link_to(path) {
-    var href = Mite.config.protocol + '://' + Mite.config.account + '.' + Mite.config.domain + '/' + path;
+    var href = mite.config.protocol + '://' + mite.config.account + '.' + mite.config.domain + '/' + path;
     return '<a href="'+href+'" target="_blank">'+path+'</a>'
   } // link_to(path)
   function build_table_for(what, json) {

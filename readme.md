@@ -9,67 +9,67 @@ you can access your mite account from any domain, e.g. using this mite.api wrapp
 Usage
 -------
 
-Setup miteQuery using your mite.account & mite.api_key.
+Setup Mite using your mite.account & mite.api_key.
 
-    Mite = new miteQuery({account: 'accountname',api_key: '12345678'})
+    mite = new Mite({account: 'accountname',api_key: '12345678'})
 
-    Mite.myself()
-    Mite.account()
+    mite.myself()
+    mite.account()
 
-    Mite.TimeEntry.all()
-    Mite.TimeEntry.all({group_by: 'customer,project'})
-    Mite.TimeEntry.create({minutes: 10})
-    Mite.TimeEntry.find(123)
-    Mite.TimeEntry.update(123, {minutes: 20})
-    Mite.TimeEntry.destroy(123)
+    mite.TimeEntry.all()
+    mite.TimeEntry.all({group_by: 'customer,project'})
+    mite.TimeEntry.create({minutes: 10})
+    mite.TimeEntry.find(123)
+    mite.TimeEntry.update(123, {minutes: 20})
+    mite.TimeEntry.destroy(123)
 
-    Mite.Tracker.find()
-    Mite.Tracker.start(123)
-    Mite.Tracker.stop(123)
+    mite.Tracker.find()
+    mite.Tracker.start(123)
+    mite.Tracker.stop(123)
 
-    Mite.Bookmark.all()
-    Mite.Bookmark.find(123)
-    Mite.Bookmark.time_entries_for(123)
+    mite.Bookmark.all()
+    mite.Bookmark.find(123)
+    mite.Bookmark.time_entries_for(123)
 
-    Mite.Customer.active()
-    Mite.Customer.archived()
-    Mite.Customer.create({name: 'my new customer'})
-    Mite.Customer.find(123)
-    Mite.Customer.update(123, {name: 'new named customer'})
-    Mite.Customer.destroy(123)
-    Mite.Customer.projects_for(123)
-    Mite.Customer.time_entries_for(123)
+    mite.Customer.active()
+    mite.Customer.archived()
+    mite.Customer.create({name: 'my new customer'})
+    mite.Customer.find(123)
+    mite.Customer.update(123, {name: 'new named customer'})
+    mite.Customer.destroy(123)
+    mite.Customer.projects_for(123)
+    mite.Customer.time_entries_for(123)
 
-    Mite.Project.active()
-    Mite.Project.archived()
-    Mite.Project.create({name: 'my new project'})
-    Mite.Project.find(123)
-    Mite.Project.update(123, {name: 'new named project'})
-    Mite.Project.destroy(123)
-    Mite.Project.time_entries_for(123)
+    mite.Project.active()
+    mite.Project.archived()
+    mite.Project.create({name: 'my new project'})
+    mite.Project.find(123)
+    mite.Project.update(123, {name: 'new named project'})
+    mite.Project.destroy(123)
+    mite.Project.time_entries_for(123)
 
-    Mite.Service.active()
-    Mite.Service.archived()
-    Mite.Service.create({name: 'my new service'})
-    Mite.Service.find(123)
-    Mite.Service.update(123, {name: 'new named service'})
-    Mite.Service.destroy(123)
-    Mite.Service.time_entries_for(123)
+    mite.Service.active()
+    mite.Service.archived()
+    mite.Service.create({name: 'my new service'})
+    mite.Service.find(123)
+    mite.Service.update(123, {name: 'new named service'})
+    mite.Service.destroy(123)
+    mite.Service.time_entries_for(123)
 
-    Mite.User.active()
-    Mite.User.archived()
-    Mite.User.find(123)
-    Mite.User.time_entries_for(123)
+    mite.User.active()
+    mite.User.archived()
+    mite.User.find(123)
+    mite.User.time_entries_for(123)
     
 A callback function can be passed to all queries as last param.
 
-    Mite.myself(function(data) {
+    mite.myself(function(data) {
       alert('Hello, ' + data.user.name + '!')
     });
 
 Pass differnt callbacks as an associative Array
 
-    Mite.Customer.find(1234, {
+    mite.Customer.find(1234, {
       success  : function(data) {},
       error    : function(xhr, msg) {},
       complete : function(xhr) {}

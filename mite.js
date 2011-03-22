@@ -32,7 +32,7 @@
         return obj;
       };
 
-  window.miteQuery = function(options) {
+  window.Mite = function(options) {
     if (!options || !options.account || !options.api_key) {
       throw "account & api_key need to be set";
     }
