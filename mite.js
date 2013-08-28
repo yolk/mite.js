@@ -69,7 +69,7 @@
         if (/2\d\d/.test(xhr.status)) {
           if(xhr.responseText) {
             response.success = [_parseJson(xhr.responseText)];
-            success( _parseJson(xhr.responseText) );
+            success( response.success[0] );
           } else {
             response.error = [xhr, 'error'];
             error(xhr, 'error');
@@ -110,7 +110,7 @@
         }, timeout * 1000);
       }
 
-      xhr.open(method,path,async);
+      xhr.open(method, path, async);
       if (data instanceof Object) {
         data = JSON.stringify(data);
         xhr.setRequestHeader('Content-Type','application/json');
