@@ -1,6 +1,6 @@
 * PROBLEM
 
-  Firefox returns status code 0, if there is an error, instead of 401, 404, 500 etc. 
+  Firefox returns status code 0, if there is an error, instead of 401, 404, 500 etc.
   It also does not return the response text, which could be used as a fallback when status code is 0.
 
   CURRENT SOLUTION
@@ -11,9 +11,9 @@
 
   Try to find out the reason behind Firefox returning status code 0 and a smarter solution then
   the current one for a better error handling.
-  
+
   SEE
-  
+
   https://bugzilla.mozilla.org/show_bug.cgi?id=580353
 
 * Add test for create, update, delete operations.

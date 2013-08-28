@@ -38,7 +38,7 @@
   }
   thead th {
     border-bottom:    1px solid #000;
-    text-align:       left;    
+    text-align:       left;
   }
   </style>
 </head>
@@ -63,7 +63,7 @@
       <small id="connection-status">not connected</small>
     </p>
   </form><!-- /setup -->
-  
+
   <script>
   function now() {
     return (new Date()).getTime();
@@ -74,14 +74,14 @@
         $status = $('#connection-status'),
         domain  = 'mite.yo.lk',
         protocol = 'https';
-    
+
     try {
       mite = new Mite({account: account, api_key: api_key, domain: domain, protocol: protocol});
     } catch(e) {
       alert(e);
       return;
     }
-    
+
     $status.text('loading ...');
     load_myself();
   } // connect()
@@ -107,7 +107,7 @@
       });
     } // load_myself()
   </script>
-  
+
   <div id="account" class="hide">
     <p class="status">loading account ...</p>
   </div><!-- /account -->
@@ -122,7 +122,7 @@
       });
     } // load_account()
   </script>
-  
+
   <div id="customers" class="hide">
     <p class="status">loading customers ...</p>
   </div><!-- /customers -->
@@ -137,7 +137,7 @@
       })
     } // load_customers()
   </script>
-  
+
   <div id="projects" class="hide">
     <p class="status">loading projects ...</p>
   </div><!-- /projects -->
@@ -152,7 +152,7 @@
       })
     } // load_projects()
   </script>
-  
+
   <div id="services" class="hide">
     <p class="status">loading services ...</p>
   </div><!-- /services -->
@@ -169,7 +169,7 @@
       })
     } // load_services()
   </script>
-  
+
   <div id="services-from-cache" class="hide">
     <p class="status">loading services from cache ...</p>
   </div><!-- /services -->
@@ -185,8 +185,8 @@
       })
     } // load_services()
   </script>
-  
-  
+
+
   <script>
   function link_to(path) {
     var href = mite.config.protocol + '://' + mite.config.account + '.' + mite.config.domain + '/' + path;
@@ -205,7 +205,7 @@
           html += '</th>';
         }
         html += '</tr></thead>';
-        
+
         for (var i=0; i < json.length; i++) {
           html += '<tr>';
           for(attr in json[i][what]) {

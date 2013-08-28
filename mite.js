@@ -1,5 +1,5 @@
-(function(window) {  
-  var _defaults      = { 
+(function(window) {
+  var _defaults      = {
     protocol : 'https',
     domain   : 'mite.yo.lk',
     async    : true,
@@ -10,13 +10,13 @@
       _parseJson    = function(string) { return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string); },
       _buildQuery   = function(params) {
         if(!params || typeof params == "String") { return params || ""; }
-        
+
         var queries = [];
         for(key in params) {
           if(key == '_queryString') {
             queries.push(params[key]);
           } else {
-            queries.push([encodeURIComponent(key),encodeURIComponent(params[key])].join('=')); 
+            queries.push([encodeURIComponent(key),encodeURIComponent(params[key])].join('='));
           }
         }
         return queries.join('&');
@@ -40,11 +40,11 @@
     ////
     //  Private
     var config = _extend({}, _defaults, options),
-    
+
     _loading = {},
-    
+
     _cache = {},
-    
+
     // build URL for API request
     _buildUrl = function(path) {
       return config.protocol + '://' + 'corsapi.' + config.domain + '/' + path + '.json';
@@ -72,7 +72,7 @@
             response.error = [xhr, 'error'];
             error(xhr, 'error');
           }
-        } else {  
+        } else {
           response.error = [xhr, xhr.responseText || 'error'];
           error(xhr, xhr.responseText || 'error');
         }
@@ -115,8 +115,8 @@
       }
 
       xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-      xhr.setRequestHeader("X-MiteApiKey",  config.api_key);     
-      xhr.setRequestHeader("X-MiteAccount", config.account);     
+      xhr.setRequestHeader("X-MiteApiKey",  config.api_key);
+      xhr.setRequestHeader("X-MiteAccount", config.account);
       xhr.send(data);
 
       if (!config.async) {
@@ -142,7 +142,7 @@
     _destroy = function(path, options) {
       return _request('DELETE', _buildUrl(path), _parseOptions(options));
     },
-        
+
     _interface = function(cached_get_requests) {
 
       // GET request
@@ -200,9 +200,9 @@
         update            : undefined,
         destroy           : undefined
       };
-      
-      
-      //// 
+
+
+      ////
       //  Public
       return {
         // http://mite.yo.lk/en/api/account.html
@@ -256,7 +256,7 @@
         }
       };
     };
-    
+
     return _extend(_interface(), { cache: _interface(true) } );
   };
 }(window));
