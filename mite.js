@@ -1,4 +1,6 @@
 (function(window) {
+  'use strict';
+
   var _defaults      = {
         protocol : 'https',
         domain   : 'mite.yo.lk',
@@ -219,7 +221,7 @@
           stop              : function(id, options)          { return    _destroy('tracker/'+id,                        options); }
         },
         // http://mite.yo.lk/en/api/bookmarks.html
-        Bookmark    : Bookmark = _extend({
+        Bookmark    : _extend({
           _url              : 'time_entries/bookmarks',
           // TODO fix me (I guess it relates to the redirect)
           time_entries_for  : function(id, options)          { return    _get(this._url + '/' + id + '/follow',   options); }
