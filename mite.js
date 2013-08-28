@@ -1,18 +1,18 @@
 (function(window) {
   var _defaults      = {
-    protocol : 'https',
-    domain   : 'mite.yo.lk',
-    async    : true,
-    timeout  : 60, // 1 minute
-    error  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');}
-  },
+        protocol : 'https',
+        domain   : 'mite.yo.lk',
+        async    : true,
+        timeout  : 60, // 1 minute
+        error  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');}
+      },
       _nada         = function() {},
       _parseJson    = function(string) { return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string); },
       _buildQuery   = function(params) {
-        if(!params || typeof params == "String") { return params || ""; }
+        if(!params || typeof params == 'String') { return params || ''; }
 
         var queries = [];
-        for(key in params) {
+        for(var key in params) {
           if(key == '_queryString') {
             queries.push(params[key]);
           } else {
@@ -34,7 +34,7 @@
 
   window.Mite = function(options) {
     if (!options || !options.account || !options.api_key) {
-      throw "account & api_key need to be set";
+      throw 'account & api_key need to be set';
     }
 
     ////
@@ -115,8 +115,8 @@
       }
 
       xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
-      xhr.setRequestHeader("X-MiteApiKey",  config.api_key);
-      xhr.setRequestHeader("X-MiteAccount", config.account);
+      xhr.setRequestHeader('X-MiteApiKey',  config.api_key);
+      xhr.setRequestHeader('X-MiteAccount', config.account);
       xhr.send(data);
 
       if (!config.async) {
@@ -180,19 +180,19 @@
       },
 
       Base = {
-        _name             : function()                     { return this._url.replace(/s$/, "").replace(/ie$/, "y"); },
+        _name             : function()                     { return this._url.replace(/s$/, '').replace(/ie$/, 'y'); },
         _wrapParams       : function(params)               { var p = {}; p[this._name()] = params; return p; },
         all               : function(params, options)      { return    _get(this._url,                              params, options); },
-        find              : function(id, options)          { return    _get(this._url + "/" + id,                           options); },
+        find              : function(id, options)          { return    _get(this._url + '/' + id,                           options); },
         create            : function(params, options)      { return    _post(this._url,           this._wrapParams(params), options); },
-        update            : function(id, params, options)  { return    _put(this._url + "/" + id, this._wrapParams(params), options); },
-        destroy           : function(id, options)          { return    _destroy(this._url + "/" + id,                       options); }
+        update            : function(id, params, options)  { return    _put(this._url + '/' + id, this._wrapParams(params), options); },
+        destroy           : function(id, options)          { return    _destroy(this._url + '/' + id,                       options); }
       },
 
       ActiveArchivedBase = _extend({
         all               : undefined,
         active            : Base.all,
-        archived          : function(params, options)      { return    _get(this._url + "/archived",      params, options); }
+        archived          : function(params, options)      { return    _get(this._url + '/archived',      params, options); }
       }, Base),
 
       OnlyReadable = {
