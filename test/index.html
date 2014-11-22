@@ -100,9 +100,6 @@
           $('#connection-status').text('connected.');
           $('.status', $myself).html(link_to('myself') + '.')
           load_account();
-        },
-        error: function(xhr, error) {
-          alert('Something went wrong:\n' +error);
         }
       });
     } // load_myself()

@@ -1,51 +1,26 @@
 (function(window) {
   'use strict';
 
-  var _defaults      = {
+  var DEFAULTS      = {
         protocol : 'https',
         domain   : 'mite.yo.lk',
         async    : true,
         timeout  : 60, // 1 minute
-        error  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');},
-        start: function (xhr) {}
-      },
-      _nada         = function() {},
-      _parseJson    = function(string) { return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string); },
-      _buildQuery   = function(params) {
-        if(!params || typeof params == 'String') { return params || ''; }
-
-        var queries = [];
-        for(var key in params) {
-          if(key == '_queryString') {
-            queries.push(params[key]);
-          } else {
-            queries.push([encodeURIComponent(key),encodeURIComponent(params[key])].join('='));
-          }
+        error  : function(_, msg) {
+          alert('Error: ' + _parseJSON(msg).error);
         }
-        return queries.join('&');
-      },
-      _parseOptions = function(options) {
-        if(typeof options == 'function') { options = {success: options}; }
-        return options || {};
-      },
-      _extend       = function(obj) {
-        for(var i = 1, len = arguments.length; i < len; i++ ) {
-          for (var prop in arguments[i]) { obj[prop] = arguments[i][prop]; }
-        }
-        return obj;
       };
 
-  window.Mite = function(options) {
-    if (!options || !options.account || !options.api_key) {
+  window.Mite = function Mite(config) {
+    if (!config || !config.account || !config.api_key) {
       throw 'account & api_key need to be set';
     }
 
+    config = _extend({}, DEFAULTS, config);
+
     ////
     //  Private
-    var config = _extend({}, _defaults, options),
-
-    _loading = {},
-
+    var _loading = {},
     _cache = {},
 
     // build URL for API request
@@ -56,36 +31,11 @@
     // ajax call wrapper
     _request = function(method, path, options) {
       var xhr         = new XMLHttpRequest(),
-          start       = options.start || config.start,
+          start       = options.start     || config.start || _nada,
           data        = options.data      || null,
           async       = (typeof options.async == 'boolean') ? options.async : config.async,
           timeout     = options.timeout   || config.timeout,
           timeout_handler, user_input;
-
-      var handle_complete = function(options) {
-        var success     = options.success   || _nada,
-            error       = options.error     || config.error,
-            complete    = options.complete  || config.complete,
-            response    = {success: null, error: null, complete: null};
-
-        if (/2\d\d/.test(xhr.status)) {
-          if(xhr.responseText) {
-            response.success = [_parseJson(xhr.responseText)];
-            success( response.success[0] );
-          } else {
-            response.error = [xhr, 'error'];
-            error(xhr, 'error');
-          }
-        } else {
-          response.error = [xhr, xhr.responseText || 'error'];
-          error(xhr, xhr.responseText || 'error');
-        }
-
-        response.complete = xhr;
-        complete(xhr);
-
-        return response;
-      };
 
       xhr.onreadystatechange = function(){
         var _resp = null;
@@ -95,11 +45,11 @@
 
             // make sure to call the callbacks from all GET requests to the same path
             // that have been started while the response was vacant
-            for (var i=0; i < _loading[path].length; i++) _cache[path] = handle_complete(_loading[path][i]);
+            for (var i=0; i < _loading[path].length; i++) _cache[path] = _handleResponse(xhr, _loading[path][i]);
 
             delete _loading[path];
           } else {
-            handle_complete(options);
+            _handleResponse(xhr, options);
           }
 
           clearTimeout(timeout_handler);
@@ -111,7 +61,7 @@
           error(xhr, 'timeout');
         }, timeout * 1000);
       }
-      
+
       start(xhr);
       xhr.open(method, path, async);
       if (data instanceof Object) {
@@ -125,8 +75,32 @@
       xhr.send(data);
 
       if (!config.async) {
-        return _parseJson(xhr.responseText);
+        return _parseJSON(xhr.responseText);
       }
+    },
+    _handleResponse = function(xhr, options) {
+      var success     = options.success  || config.success  || _nada,
+          error       = options.error    || config.error    || _nada,
+          complete    = options.complete || config.complete || _nada,
+          response    = {};
+
+      if (/2\d\d/.test(xhr.status)) {
+        if(xhr.responseText) {
+          response.success = [_parseJSON(xhr.responseText)];
+          success( response.success[0] );
+        } else {
+          response.error = [xhr, 'error'];
+          error(xhr, 'error');
+        }
+      } else {
+        response.error = [xhr, xhr.responseText || 'error'];
+        error(xhr, xhr.responseText || 'error');
+      }
+
+      response.complete = xhr;
+      complete(xhr);
+
+      return response;
     },
 
     // POST request
@@ -206,7 +180,6 @@
         destroy           : undefined
       };
 
-
       ////
       //  Public
       return {
@@ -264,4 +237,41 @@
 
     return _extend(_interface(), { cache: _interface(true) } );
   };
+
+  // Helpers
+  function _nada() {}
+
+  function _parseJSON(string) {
+    var json;
+    try {
+      json = JSON.parse(string);
+    } catch(err) {}
+    return json || {};
+  }
+
+  function _buildQuery(params) {
+    if(!params || typeof params == 'string') { return params || ''; }
+
+    var queries = [];
+    for(var key in params) {
+      if(key == '_queryString') {
+        queries.push(params[key]);
+      } else {
+        queries.push([encodeURIComponent(key),encodeURIComponent(params[key])].join('='));
+      }
+    }
+    return queries.join('&');
+  }
+
+  function _parseOptions(options) {
+    if(typeof options == 'function') { options = {success: options}; }
+    return options || {};
+  }
+
+  function _extend(obj) {
+    for(var i = 1, len = arguments.length; i < len; i++ ) {
+      for (var prop in arguments[i]) { obj[prop] = arguments[i][prop]; }
+    }
+    return obj;
+  }
 }(window));
