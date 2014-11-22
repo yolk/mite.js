@@ -6,7 +6,8 @@
         domain   : 'mite.yo.lk',
         async    : true,
         timeout  : 60, // 1 minute
-        error  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');}
+        error  : function(xhr, msg) {alert('Error: mite.gyver could not connect with your mite.account!');},
+        start: function (xhr) {}
       },
       _nada         = function() {},
       _parseJson    = function(string) { return ( /^\s*$/.test(string) ) ? {} : JSON.parse(string); },
@@ -55,6 +56,7 @@
     // ajax call wrapper
     _request = function(method, path, options) {
       var xhr         = new XMLHttpRequest(),
+          start       = options.start || config.start,
           data        = options.data      || null,
           async       = (typeof options.async == 'boolean') ? options.async : config.async,
           timeout     = options.timeout   || config.timeout,
@@ -63,7 +65,7 @@
       var handle_complete = function(options) {
         var success     = options.success   || _nada,
             error       = options.error     || config.error,
-            complete    = options.complete  || _nada,
+            complete    = options.complete  || config.complete,
             response    = {success: null, error: null, complete: null};
 
         if (/2\d\d/.test(xhr.status)) {
@@ -109,7 +111,8 @@
           error(xhr, 'timeout');
         }, timeout * 1000);
       }
-
+      
+      start(xhr);
       xhr.open(method, path, async);
       if (data instanceof Object) {
         data = JSON.stringify(data);
